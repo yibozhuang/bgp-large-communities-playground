@@ -1,0 +1,34 @@
+version: '2.4'
+
+services:
+  exabgp:
+    image: pierky/exabgp
+    volumes:
+      - ./exabgp:/etc/exabgp:rw
+    restart: always
+    networks:
+      bgp-playground:
+        ipv4_address: 172.16.238.2
+        ipv6_address: fd4a:e928:5677:3e58::2
+
+  gobgp:
+    image: pierky/gobgp
+    volumes:
+      - ./gobgp:/etc/gobgp:rw
+    restart: always
+    networks:
+      bgp-playground:
+        ipv4_address: 172.16.238.3
+        ipv6_address: fd4a:e928:5677:3e58::3
+
+networks:
+  bgp-playground:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
+          gateway: 172.16.238.1
+        - subnet: fd4a:e928:5677:3e58::/64
+          gateway: fd4a:e928:5677:3e58::1
